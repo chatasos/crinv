@@ -60,9 +60,9 @@ my $display_model = 1;		# Whether to display the ModelName
 
 my $output_mode = 1;		# 0 = print all details for all parts
 				# 1 = print all details for parts with a ModelName (default)
-				# 2 = print ModelName & SerialNumber for parts with a ModelName
+				# 2 = print only ModelName & SerialNumber for parts with a ModelName
 
-my $check_filter = 0;		# Whether to check the @filter_parts and ignore the included parts
+my $check_filter = 0;		# Whether to filter all parts included in the @filter_parts
 
 # put here any ModelName that you don't want to process and display
 my @filter_parts = (
@@ -178,15 +178,15 @@ my $OID_entPhysicalTable = '1.3.6.1.2.1.47.1.1.1.1';
 my $regexp_entPhysicalTable = '1.3.6.1.2.1.47.1.1.1.1.(\d+).(\d+)';
 
 # my %entPhysicalIndex;			# 1.3.6.1.2.1.47.1.1.1.1.1 (not supported)
-my %entPhysicalDescr;			# 1.3.6.1.2.1.47.1.1.1.1.2 = Cisco ASR1000 Route Processor 2
+my %entPhysicalDescr;			# 1.3.6.1.2.1.47.1.1.1.1.2	= Cisco ASR1000 Route Processor 2
 my %entPhysicalContainedIn;		# 1.3.6.1.2.1.47.1.1.1.1.4
 my %entPhysicalClass;			# 1.3.6.1.2.1.47.1.1.1.1.5
-# my %entPhysicalParentRelPos;	# 1.3.6.1.2.1.47.1.1.1.1.6 (not used)
+# my %entPhysicalParentRelPos;		# 1.3.6.1.2.1.47.1.1.1.1.6 (not used)
 my %entPhysicalName;			# 1.3.6.1.2.1.47.1.1.1.1.7	= module R0
 my %entPhysicalHardwareRev;		# 1.3.6.1.2.1.47.1.1.1.1.8	= V01
 my %entPhysicalFirmwareRev;		# 1.3.6.1.2.1.47.1.1.1.1.9	= 12.2(33r)XNC0
 my %entPhysicalSoftwareRev;		# 1.3.6.1.2.1.47.1.1.1.1.10	= 02.04.02.122-33.XND2
-my %entPhysicalSerialNum;		# 1.3.6.1.2.1.47.1.1.1.1.11 = XXX11111XXX
+my %entPhysicalSerialNum;		# 1.3.6.1.2.1.47.1.1.1.1.11	= XXX11111XXX
 my %entPhysicalModelName;		# 1.3.6.1.2.1.47.1.1.1.1.13	= ASR1000-RP2
 my %entPhysicalIsFRU;			# 1.3.6.1.2.1.47.1.1.1.1.16
 
@@ -208,7 +208,6 @@ foreach (qw(INT QUIT KILL)) {
 	close (SNMPNULL) or warn "Close failed: $!";
 	close (SNMPOTHER) or warn "Close failed: $!";
 
-
         exit 1;
         }
 }
@@ -220,7 +219,7 @@ foreach (qw(INT QUIT KILL)) {
 
 print "\n";
 print "$PROG_DESC $VERSION ($VERSION_DATE)\n";
-print "$AUTHOR\n";
+#print "$AUTHOR\n";
 print "---------------------------------------------------\n";
 
 #######################
@@ -242,7 +241,6 @@ print "Collecting snmp data...\n";
 open (SNMPERROR, ">$file_snmperror") or die "ERROR while trying to open file >$file_snmperror for writing\n";
 open (SNMPNULL,  ">$file_snmpnull")  or die "ERROR while trying to open file >$file_snmpnull for writing\n";
 open (SNMPOTHER, ">$file_snmpnull")  or die "ERROR while trying to open file >$file_snmpother for writing\n";
-
 
 # Create a session for each device and issue a get_table request for each one of them
 for $dev_name (sort keys %hash_devices) {
@@ -354,7 +352,6 @@ for $dev_name (sort keys %hash_devices) {
 close (SNMPERROR) or warn "Close failed: $!";
 close (SNMPNULL) or warn "Close failed: $!";
 close (SNMPOTHER) or warn "Close failed: $!";
-
 
 #print Dumper(%entPhysicalDescr);
 
@@ -551,7 +548,7 @@ sub print_branch
 	my $id  = ( $display_id ) ? "$branch;" : '';	# whether to show the id included in the snmp oid
 	
 	# check if ModelName is included into the parts that have to be filtered
-# \Q\E are used in grep in order to "disable" any possible pattern metacharacters found in ModelName
+	# \Q\E are used in grep in order to "disable" any possible pattern metacharacters found in ModelName
 	if ( $check_filter && $entPhysicalModelName{$tree}{$branch} && scalar grep(/^\Q$entPhysicalModelName{$tree}{$branch}\E$/, @filter_parts) ) {
 		# skip/ignore the part
 	} else {
