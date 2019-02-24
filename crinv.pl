@@ -23,25 +23,25 @@
 #
 # v1.1 23/09/2011 error output is redirected to two files for later processing
 #                 some extra checks added while reading/writing files
-#
+# v1.2 24/02/2019 uploaded to github
 ###############################################################################
 
 use strict;
 use warnings;
-use Getopt::Std; 			# For the processing of the command line options
+use Getopt::Std; 		# For the processing of the command line options
 #use diagnostics -verbose;	# For diagnostics
-use Data::Dumper;			# For dumping variables
+use Data::Dumper;		# For dumping variables
 #use Switch;
 #use XML::Dumper;
-use Net::SNMP;				# For SNMP polling
+use Net::SNMP;			# For SNMP polling
 
 ##################################
 # user defined variables
 ##################################
 
-# Default Community name used for SNMP requests
+# Default Community used for SNMP requests
 # set this to a default value, if you don't want to put it into a file or give it as a cli option
-my $def_community_name = 'TEST-COMM';
+my $def_community_name = 'public';
 
 # define various display filters
 my $display_dev_name = 1;	# Whether to display the device name in the leftmost column
@@ -49,7 +49,7 @@ my $display_dev_name = 1;	# Whether to display the device name in the leftmost c
 my $left_space = " ";		# You can use "\t" for more clarity (although Excel has issues with tab) or "" for no space at all
 my $display_level = 1;		# Whether to make the ouput seem hierarchical ($left_space must not be empty)
 
-my $display_id = 0;			# Whether to display the Id from OID (usually not needed)
+my $display_id = 0;		# Whether to display the Id from OID (usually not needed)
 my $display_descr = 1;		# Whether to display the Description
 my $display_name = 1;		# Whether to display the Name
 my $display_ser_num = 1;	# Whether to display the SerialNumber
@@ -59,8 +59,8 @@ my $display_sw_rev = 1;		# Whether to display the SoftwareRevision
 my $display_model = 1;		# Whether to display the ModelName
 
 my $output_mode = 1;		# 0 = print all details for all parts
-							# 1 = print all details for parts with a ModelName (default)
-							# 2 = print ModelName & SerialNumber for parts with a ModelName
+				# 1 = print all details for parts with a ModelName (default)
+				# 2 = print ModelName & SerialNumber for parts with a ModelName
 
 my $check_filter = 0;		# Whether to check the @filter_parts and ignore the included parts
 
@@ -118,10 +118,8 @@ my @filter_parts = (
 my $PROG_NAME      = $0; 
 my $PROG_DESC      = 'crinv (Create Inventory Report)';
 my $AUTHOR         = 'Tassos (http://ccie-in-3-months.blogspot.com/)';
-my $VERSION        = "v1.1";
-my $VERSION_DATE   = "23-Sep-2011";
-my $COPYRIGHT_DATE = "2009-2011";
-
+my $VERSION        = "v1.2";
+my $VERSION_DATE   = "24-Feb-2019";
 
 
 #####################
@@ -222,7 +220,7 @@ foreach (qw(INT QUIT KILL)) {
 
 print "\n";
 print "$PROG_DESC $VERSION ($VERSION_DATE)\n";
-print "(c) $COPYRIGHT_DATE $AUTHOR\n";
+print "$AUTHOR\n";
 print "---------------------------------------------------\n";
 
 #######################
@@ -309,8 +307,8 @@ for $dev_name (sort keys %hash_devices) {
 			$hash_key = $2;
 			$hash_value = $result->{$oid};		# ${$result}{$oid} can be used too
 			
-			$hash_value =~ s/^[\s"]*//;			# remove all spaces and quotes from the start
-			$hash_value =~ s/[\s"]*$//;			# remove all spaces and quotes from the end
+			$hash_value =~ s/^[\s"]*//;		# remove all spaces and quotes from the start
+			$hash_value =~ s/[\s"]*$//;		# remove all spaces and quotes from the end
 			#$hash_value =~ s/["]* Hex: .*$//;	# remove some ugly chars from the end
 
 			if ( $entry == 2 ) {
@@ -407,10 +405,10 @@ for my $device (keys %entPhysicalContainedIn ) {
 		push @{ $hash_entPhysicalTree{$device}{$hash_key} }, $part_id;
 
 	# create a new hash that includes everything for future XML/HTML usage
-	#$hash_entPhysicalEntry{$device}{$hash_key}{Id}				= $hash_key;
-	#$hash_entPhysicalEntry{$device}{$hash_key}{Name}			= $entPhysicalName{$device}{$hash_key};
+	#$hash_entPhysicalEntry{$device}{$hash_key}{Id}			= $hash_key;
+	#$hash_entPhysicalEntry{$device}{$hash_key}{Name}		= $entPhysicalName{$device}{$hash_key};
 	#$hash_entPhysicalEntry{$device}{$hash_key}{ModelName}		= $entPhysicalModelName{$device}{$hash_key};
-	#$hash_entPhysicalEntry{$device}{$hash_key}{Descr}			= $entPhysicalDescr{$device}{$hash_key};
+	#$hash_entPhysicalEntry{$device}{$hash_key}{Descr}		= $entPhysicalDescr{$device}{$hash_key};
 	#$hash_entPhysicalEntry{$device}{$hash_key}{SerialNum}		= $entPhysicalSerialNum{$device}{$hash_key};
 	#$hash_entPhysicalEntry{$device}{$hash_key}{FirmwareRev}	= $entPhysicalFirmwareRev{$device}{$hash_key};
 	#$hash_entPhysicalEntry{$device}{$hash_key}{SoftwareRev}	= $entPhysicalSoftwareRev{$device}{$hash_key};
@@ -622,7 +620,7 @@ sub help
 {
     print "
     $PROG_DESC $VERSION ($VERSION_DATE)
-    (c) $COPYRIGHT_DATE $AUTHOR
+    $AUTHOR
 	
     Usage:
         $PROG_NAME -d file [-c community]
