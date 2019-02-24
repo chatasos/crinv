@@ -1,10 +1,10 @@
-Create Inventory Report
+crinv (Create Inventory Report)
 
 # Description
 
 crinv is a perl script that processes a text file with a list of devices (routers & switches),
 then it gets info from them by using the SNMP Entity-MIB,
-and finally it creates a csv file with parts info per device in a kind of hierarchical format.
+and finally it creates a csv file with parts per device in a hierarchical format.
 
 # Format of devices' file
  - The general format of each line is `"device|community"`
@@ -17,16 +17,16 @@ and finally it creates a csv file with parts info per device in a kind of hierar
  - Lines without a `|` character are considered to be devices and use the default/cli community
 
 # Hierarchical output
-In order to make the output kind of hierarchical, you have to change the following two parameters inside the script:
+In order to make the output seem hierarchical, you have to change the following two parameters inside the script:
 
 ```
 my $left_space = " ";  # This can be any character(s) you want to use to produce the left indent effect
-                        # spaces are prefered since tab characters do not show up in Excel
+                       # spaces are prefered because tab characters do not show up in Excel
 my $display_level = 1; # This must be 1 for hierarchical output
 ```
 
 # Files
-All otuput filename are created automatically after removing any extension from the 
+All otuput filenames are created automatically after removing any extension from the 
 devices input filename and adding the right string to it.
 
 If the input file is named `devices.txt`, then the following output files are created:
@@ -40,12 +40,12 @@ If the input file is named `devices.txt`, then the following output files are cr
 
 # Examples
 
-Process all devices from devices.txt and use SNMP-COMM as a community name for devices that don't have one
+Process all devices from `devices.txt` and use SNMP-COMM as a community name for devices that don't have one:
 ```
 crinv -d devices.txt -c SNMP-COMM
 ```
 
-Process all devices from devices.txt and use the default community name for devices that don't have one
+Process all devices from `devices.txt` and use the default community name for devices that don't have one:
 ```
 crinv -d devices.txt
 ```
