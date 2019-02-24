@@ -1,0 +1,7 @@
+# crinv devices file
+# enter a single device per line
+# use | if you want to add a snmp community per device
+router1
+router2
+router3|comm3
+router4|comm4
