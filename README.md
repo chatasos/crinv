@@ -1,6 +1,5 @@
-# crinv
-Create Inventory Report
-
+# Create Inventory Report
+#
 # crinv is a perl script that processes a text file with a list of devices (routers & switches),
 # then it gets info from them by using the SNMP Entity-MIB,
 # and finally it creates a csv file with parts info per device in a kind of hierarchical format.
